@@ -1,0 +1,10 @@
+**/.pio/
+**/.pioenvs/
+**/.vscode/
+**/secrets.h
+!/Receiver/src/secrets.example.h
+
+*.bin
+*.elf
+*.log
+*.tmp
