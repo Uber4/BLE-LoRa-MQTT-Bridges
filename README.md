@@ -1,4 +1,4 @@
-# BLE-LoRa-MQTT Bridges
+# BLE-LoRa-MQTT Bridges with ESPHome
 
 This project implements a wireless sensor bridge using M5Atom devices and LoRa communication. The SenderS3 sketch reads environmental data (temperature, humidity, battery level) from Xiaomi BLE thermometers and transmits it over LoRa P2P, while also controlling a PWM fan based on temperature. The Receiver sketch listens for LoRa frames and forwards the received sensor data to an MQTT broker over WiFi, enabling integration with home automation systems or dashboards. 
 
@@ -9,7 +9,13 @@ This repository provides two sketches for ESP32 based devices. M5Atom modules ar
    Includes PWM fan control based on temperature thresholds.
 
 3. **Receiver**  
-   Receives LoRa P2P frames and republishes the sensor readings (and LoRa metrics) to an MQTT broker over WiFi.
+   On the receiver side, there are two options:
+
+    A) Receiver/MQTT (Arduino/PlatformIO): 
+    Listens for LoRa frames and forwards the received sensor data to an MQTT broker over WiFi.
+
+    B) Receiver/ESPHome (ESPHome external component):
+    Listens for LoRa frames and exposes the received values directly as ESPHome entities (ideal for Home Assistant integration).
 
 ---
 
@@ -26,6 +32,23 @@ This repository provides two sketches for ESP32 based devices. M5Atom modules ar
   - M5stack Atom Lite (any ESP32/ESP8266 should work) https://docs.m5stack.com/en/core/ATOM%20Lite
   - LoRaWAN Unit (same as sender)
   - WiFi network with access to an MQTT broker
+
+## Receiver options
+
+### Option A — Receiver/MQTT (Arduino/PlatformIO)
+Located in: `Receiver/MQTT/`
+
+- Receives LoRa P2P frames
+- Checks CRC
+- Publishes sensor data + LoRa metrics to an MQTT broker over WiFi
+
+### Option B — Receiver/ESPHome (ESPHome external component)
+Located in: `Receiver/ESPHome/`
+
+- Receives LoRa P2P frames via UART (RAK3172 / RAK LoRa module)
+- Parses frames, checks CRC and exposes the values as ESPHome entities (sensors, binary sensors, text sensors)
+- No standalone MQTT firmware needed — use ESPHome native integrations
+- An example ESPHome configuration is provided in: `Receiver/ESPHome/BLE-Lora-Bridge.yaml`
 
 ---
 ```text
@@ -54,13 +77,14 @@ This repository provides two sketches for ESP32 based devices. M5Atom modules ar
                          │-----------------------------│
                          │  - Listens LoRa P2P         │
                          │  - Checks CRC               │
-                         │  - WiFi + MQTT publish      │
+                         │  - MQTT/ESPHome publish     │
                          └───────────┬─────────────────┘
                                      │ WiFi
                                      ▼
                            ┌───────────────────────┐
                            │       MQTT BROKER     │
-                           │    HOME AUTOMATION    │
+                           │       OR ESPHOME      │
+                           │  FOR HOME AUTOMATION  │
                            │      DASHBOARDS...    │
                            └───────────────────────┘
 ```
@@ -83,6 +107,16 @@ Install via Arduino Library Manager or PlatformIO:
 
 ## Installation & Usage
 
-1. **Clone the repo on VS Code with PlatformIO installed**
-2. **Flash ATC_MiThermometer firmware in BLE thermometers (check https://github.com/atc1441/ATC_MiThermometer)**
-3. **Compile and upload to the devices**
+1. Clone the repo
+2. Flash ATC_MiThermometer firmware in BLE thermometers (see https://github.com/atc1441/ATC_MiThermometer)
+3. Build and flash **SenderS3**
+
+Then choose your receiver:
+
+### Receiver/MQTT (Arduino/PlatformIO)
+- Build and flash `Receiver/MQTT/`
+- Configure WiFi + MQTT credentials (see `secrets.example.h`)
+
+### Receiver/ESPHome
+- Use `Receiver/ESPHome/BLE-Lora-Bridge.yaml` as a starting point
+- Install the external component and flash via ESPHome
