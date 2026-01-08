@@ -1,0 +1,147 @@
+esphome:
+  name: BLE-Lora-Bridge
+  friendly_name: BLE-Lora-Bridge
+
+esp32:
+  board: esp32dev
+  framework:
+    type: esp-idf
+
+# Enabled for API logging
+logger:
+  level: VERBOSE
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "key"
+
+ota:
+  - platform: esphome
+    password: "password"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "BLE-Lora-Bridge Fallback Hotspot"
+    password: "password"
+
+captive_portal:
+
+external_components:
+  - source:
+      type: local
+      path: components
+
+uart:
+  id: uart_rak
+  tx_pin: GPIO22
+  rx_pin: GPIO19
+  baud_rate: 115200
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
+
+lora_rak3172_receiver:
+  uart_id: uart_rak
+  frequency: 868000000
+  sf: 10
+  bw: 1
+  cr: 1
+  preamble: 8
+  tx_power: 5
+  out_temp: out_temp
+  out_hum: out_hum
+  out_batt: out_batt
+  int_temp: int_temp
+  int_hum: int_hum
+  int_batt: int_batt
+  fan_state: fan_state
+  rssi: lora_rssi
+  snr: lora_snr
+  last_crc_status: last_crc_status
+# Used for debug
+#  last_raw_payload: last_raw_payload
+
+
+sensor:
+  - platform: template
+    id: out_temp
+    name: "OUT Temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    device_class: temperature
+    state_class: measurement
+
+  - platform: template
+    id: out_hum
+    name: "OUT Humidity"
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    device_class: humidity
+    state_class: measurement
+
+  - platform: template
+    id: out_batt
+    name: "OUT Battery"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    device_class: battery
+    state_class: measurement
+
+  - platform: template
+    id: int_temp
+    name: "INT Temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    device_class: temperature
+    state_class: measurement
+
+  - platform: template
+    id: int_hum
+    name: "INT Humidity"
+    unit_of_measurement: "%"
+    accuracy_decimals: 1
+    device_class: humidity
+    state_class: measurement
+
+  - platform: template
+    id: int_batt
+    name: "INT Battery"
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    device_class: battery
+    state_class: measurement
+
+  - platform: template
+    id: lora_rssi
+    name: "LoRa RSSI"
+    unit_of_measurement: "dBm"
+    accuracy_decimals: 0
+    device_class: signal_strength
+    state_class: measurement
+
+  - platform: template
+    id: lora_snr
+    name: "LoRa SNR"
+    unit_of_measurement: "dB"
+    accuracy_decimals: 1
+    state_class: measurement
+    
+binary_sensor:
+  - platform: template
+    id: fan_state
+    name: "Fan State"
+
+text_sensor:
+  - platform: template
+    id: last_crc_status
+    name: "Last CRC Status"
+
+# Used for debug
+#  - platform: template
+#    id: last_raw_payload
+#    name: "Last Raw LoRa Payload"
