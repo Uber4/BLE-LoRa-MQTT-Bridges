@@ -128,13 +128,17 @@ sensor:
     id: lora_snr
     name: "LoRa SNR"
     unit_of_measurement: "dB"
-    accuracy_decimals: 1
+    accuracy_decimals: 0
+    device_class: signal_strength
     state_class: measurement
     
 binary_sensor:
   - platform: template
     id: fan_state
     name: "Fan State"
+
+  - platform: status
+    name: "Lora Rx status"
 
 text_sensor:
   - platform: template
