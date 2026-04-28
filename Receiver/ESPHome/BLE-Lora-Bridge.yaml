@@ -133,17 +133,17 @@ sensor:
     state_class: measurement
     
 binary_sensor:
-  - platform: template
-    id: fan_state
-    name: "Fan State"
-
   - platform: status
     name: "Lora Rx status"
 
 text_sensor:
   - platform: template
     id: last_crc_status
-    name: "Last CRC Status"
+    name: "Last CRC status"
+
+  - platform: template
+    id: fan_state
+    name: "BLE system status"
 
 # Used for debug
 #  - platform: template
