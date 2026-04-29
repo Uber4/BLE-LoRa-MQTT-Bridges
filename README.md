@@ -6,7 +6,7 @@ This repository provides two sketches for ESP32 based devices. M5Atom modules ar
 
 1. **SenderS3**  
    Reads temperature, humidity and battery level from two Xiaomi Mi Thermometers via BLE and sends the data over LoRa P2P. Displays readings on screen (using M5stack AtomS3).
-   Includes PWM fan control based on temperature thresholds.
+   Includes PWM fan control based on humidity thresholds.
 
 3. **Receiver**  
    On the receiver side, there are two options:

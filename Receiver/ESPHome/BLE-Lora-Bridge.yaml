@@ -9,7 +9,7 @@ esp32:
 
 # Enabled for API logging
 logger:
-  level: VERBOSE
+  level: INFO
 
 # Enable Home Assistant API
 api:
@@ -143,7 +143,21 @@ text_sensor:
 
   - platform: template
     id: fan_state
+    name: "BLE system short status"
+
+  - platform: template
     name: "BLE system status"
+    update_interval: 1s
+    lambda: |-
+      std::string s = id(fan_state).state;
+
+      if (s == "R") return {"Fan running"};
+      if (s == "S") return {"Fan stopped"};
+      if (s == "I") return {"Inside error"};
+      if (s == "O") return {"Outside error"};
+      if (s == "D") return {"No data"};
+
+      return {"Unknown"};
 
 # Used for debug
 #  - platform: template

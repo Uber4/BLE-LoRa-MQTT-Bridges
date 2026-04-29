@@ -10,7 +10,7 @@
 // LoRa settings
 #define LORA_FREQ 868E6
 #define LORA_CONFIG_PRLEN 8
-#define LORA_CONFIG_PWR 22
+#define LORA_CONFIG_PWR 20 // 20dBm equals to 100mW
 #define LORA_RX_PIN 1
 #define LORA_TX_PIN 2
 
