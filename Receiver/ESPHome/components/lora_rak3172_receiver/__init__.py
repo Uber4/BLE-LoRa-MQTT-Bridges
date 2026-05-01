@@ -47,7 +47,7 @@ CONFIG_SCHEMA = cv.Schema(
         cv.Optional(CONF_INT_TEMP): cv.use_id(sensor.Sensor),
         cv.Optional(CONF_INT_HUM): cv.use_id(sensor.Sensor),
         cv.Optional(CONF_INT_BATT): cv.use_id(sensor.Sensor),
-        cv.Optional(CONF_FAN_STATE): cv.use_id(binary_sensor.BinarySensor),
+        cv.Optional(CONF_FAN_STATE): cv.use_id(text_sensor.TextSensor),
         cv.Optional(CONF_RSSI): cv.use_id(sensor.Sensor),
         cv.Optional(CONF_SNR): cv.use_id(sensor.Sensor),
         cv.Optional(CONF_LAST_RAW_PAYLOAD): cv.use_id(text_sensor.TextSensor),

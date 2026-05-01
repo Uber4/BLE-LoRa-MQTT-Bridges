@@ -42,7 +42,7 @@ namespace esphome
       void set_int_hum(sensor::Sensor *s) { this->int_hum_ = s; }
       void set_int_batt(sensor::Sensor *s) { this->int_batt_ = s; }
 
-      void set_fan_state(binary_sensor::BinarySensor *s) { this->fan_state_ = s; }
+      void set_fan_state(text_sensor::TextSensor *s) { this->fan_state_ = s; }
 
       void set_rssi(sensor::Sensor *s) { this->rssi_ = s; }
       void set_snr(sensor::Sensor *s) { this->snr_ = s; }
@@ -440,10 +440,11 @@ namespace esphome
           this->last_crc_status_->publish_state("ok");
         }
 
-        bool fan_on = (data_part.back() == '1');
+        char status = data_part.back();
+
         if (this->fan_state_ != nullptr)
         {
-          this->fan_state_->publish_state(fan_on);
+          this->fan_state_->publish_state(std::string(1, status));
         }
 
         // Each sensor block is 1+3+3+2 chars: ID, temp*10, hum*10, batt.
@@ -465,8 +466,8 @@ namespace esphome
 
           float temperature = t / 10.0f;
           float humidity = h / 10.0f;
-          ESP_LOGD(TAG, "Sensor %d -> T=%.1fC H=%.1f%% B=%d%% Fan=%s",
-                   sensor_id, temperature, humidity, b, fan_on ? "ON" : "OFF");
+          ESP_LOGD(TAG, "Sensor %d -> T=%.1fC H=%.1f%% B=%d%% Status=%c",
+                   sensor_id, temperature, humidity, b, status);
 
           if (sensor_id == 1)
           {
@@ -521,7 +522,7 @@ namespace esphome
       sensor::Sensor *int_batt_{nullptr};
       sensor::Sensor *rssi_{nullptr};
       sensor::Sensor *snr_{nullptr};
-      binary_sensor::BinarySensor *fan_state_{nullptr};
+      text_sensor::TextSensor *fan_state_{nullptr};
       text_sensor::TextSensor *last_raw_payload_{nullptr};
       text_sensor::TextSensor *last_crc_status_{nullptr};
 
